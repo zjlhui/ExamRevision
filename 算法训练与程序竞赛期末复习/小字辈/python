@@ -1,0 +1,23 @@
+n = int(input())
+par = list(map(int, input().split()))
+l = [x for x in range(1, n + 1)]
+dic = {}
+for i, x in enumerate(par):
+    if x in dic:
+        dic[x].append(l[i])
+    else:
+        dic[x] = [l[i]]
+ 
+now = [-1]
+next = []
+cnt = 0
+while now:
+    for x in now:
+        if x in dic:
+            next += dic[x]
+    if not next:
+        print(cnt)
+        print(*now)
+    cnt += 1
+    now = next
+    next = []
