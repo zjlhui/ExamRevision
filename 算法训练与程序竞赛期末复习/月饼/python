@@ -1,0 +1,20 @@
+n, d = map(int, input().split())  # 月饼种类数，市场最大需求量
+kc = list(map(float, input().split()))  # 库存
+zj = list(map(float, input().split()))  # 总价
+dj = [y / x for x, y in zip(kc, zj)]  # 单价
+ 
+# 用字典记录各个月饼的库存
+dic = {}
+for i in range(n):
+    dic[dj[i]] = kc[i]
+ 
+dj.sort(reverse=True)  # 按单价降序
+ans = 0
+for i in range(n):
+    if d <= dic[dj[i]]:  # 当前月饼的库存大于市场需求量
+        ans += dj[i] * d
+        break
+    else:
+        ans += dj[i] * dic[dj[i]]
+        d -= dic[dj[i]]  # 市场需求量减少
+print(f"{ans:.2f}")
