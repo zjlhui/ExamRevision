@@ -1,0 +1,50 @@
+#include"iostream"
+#include"string"
+#include"stdlib.h"
+using namespace std;
+typedef struct TNode* Tree;
+struct TNode {
+    int data;
+    struct TNode* l;
+    struct TNode* r;
+};
+Tree queue[100];
+Tree build(int a1[], int a2[], int n) {
+    if (!n)return NULL;
+    Tree t = (Tree)malloc(sizeof(struct TNode));
+    t->data = a1[n - 1];
+    t->l = t->r = NULL;
+    int i = 0;
+    for (;i < n;i++) {
+        if (a2[i] == a1[n - 1])break;
+    }
+    t->l = build(a1, a2, i);
+    t->r = build(a1+i, a2+i+1, n - i - 1);
+    return t;
+}
+void traverse(Tree t) {
+    if (t) {
+        int l = 0, r = 0;
+        queue[r++] = t;
+        while (l < r) {
+            Tree tt = queue[l++];
+            if (tt != t)cout << " ";
+            cout << tt->data;
+            if (tt->l)queue[r++] = tt->l;
+            if (tt->r)queue[r++] = tt->r;
+        }
+    }
+}
+int main() {
+    int n;
+    int a1[100],a2[100];
+    cin >> n;
+    for(int i=0;i<n;i++){
+        cin >> a1[i];
+    }
+    for(int i=0;i<n;i++){
+        cin >> a2[i];
+    }
+    Tree T = build(a1, a2, n);
+    traverse(T);
+}
