@@ -1,0 +1,63 @@
+#include"iostream"
+#include"queue"
+#include"vector"
+using namespace std;
+ 
+typedef struct node* tree;
+ 
+struct node {
+	int data;
+	tree l;
+	tree r;
+};
+ 
+ 
+tree build(int a1[], int a2[], int n) {
+    if (!n)return NULL;
+    tree t = (tree)malloc(sizeof(struct node));
+    t->data = a1[n - 1];
+    t->l = t->r = NULL;
+    int i = 0;
+    for (;i < n;i++) {
+        if (a2[i] == a1[n - 1])break;
+    }
+ 
+    // a[0]到a[i-1]为左子树的结点，a[i]到a[len-2]为右子树的结点
+    // b[0]到b[i-1]为左子树的结点，b[i+1]到b[len-1]为右子树的结点
+    t->l = build(a1, a2, i);
+    t->r = build(a1 + i, a2 + i + 1, n - i - 1);
+    return t;
+}
+ 
+vector<int> vl, vr;
+queue<tree> q;
+void print(tree t) {
+    if (t) {
+        q.push(t);
+        while (!q.empty()) {
+            int len = q.size(); // 先记录这一层结点的个数
+            for (int i = 0;i < len;i++) { // 遍历一层结点
+                tree tt = q.front();
+                q.pop();
+                if (!i)vl.push_back(tt->data); // 左侧能看到每层最左边的结点
+                if (i == len - 1)vr.push_back(tt->data); // 右侧能看到每层最右边的结点
+                if (tt->l)q.push(tt->l);
+                if (tt->r)q.push(tt->r);
+            }
+        }
+    }
+    cout << "R:";
+    for (auto a : vr)cout << " " << a;
+    cout << endl << "L:";
+    for (auto a : vl)cout << " " << a;
+}
+ 
+int main() {
+    int n;
+    cin >> n;
+    int hx[25], zx[25];
+    for (int i = 0;i < n;i++)cin >> zx[i];
+    for (int i = 0;i < n;i++)cin >> hx[i];
+    tree t = build(hx, zx, n);
+    print(t);
+}
