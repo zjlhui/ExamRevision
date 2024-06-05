@@ -1,0 +1,47 @@
+#include"stdio.h"
+#include"math.h"
+int main() {
+	long long n, a, count, max = 0, x = 1, f = 0, s;
+	scanf("%lld", &n);
+	long long j;
+	for (long long w = 2;w <= sqrt(n);w++) {
+		if (n % w == 0) {
+			f = 1;
+			break;
+		}
+	}
+	if (f == 1) {
+		for (long long i = 2;i <= sqrt(n);i++) {
+			count = 1;
+			s = i;
+			if (n % i == 0) {
+				a = i;
+				for (j = i + 1;j <= sqrt(n);j++) {
+					s = s * j;
+					if (n % j == 0 && j - a == 1 && n % s == 0) {
+						count++;
+						a = j;
+					}
+				}
+				if (n % (a + 1) == 0 && (a + 1) > sqrt(n) && count == 1)count++;
+				if (count > max) {
+					max = count;
+					x = i;
+				}
+			}
+		}
+		printf("%lld\n", max);
+		printf("%lld", x);
+		long long sum = x;
+		for (long long j = x + 1;j < x + max;j++) {
+			printf("*%lld", j);
+			sum = sum * j;
+			if (sum >= n) break;
+		}
+		printf("\n");
+	}
+	else {
+		printf("1\n");
+		printf("%lld\n", n);
+	}
+}
