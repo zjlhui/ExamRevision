@@ -1,0 +1,86 @@
+#include "iostream"
+using namespace std;
+ 
+typedef struct Node* tree;
+ 
+struct Node {
+	int data;
+	tree l;
+	tree r;
+};
+ 
+int check1 = 0, check2 = 0;
+ 
+// 检查是不是二叉搜索树
+tree istree1(int a[], int len) {
+	int i; // 用i来储存第一个大于等于a[0]的元素的下标
+	if (!len)return NULL;
+	tree t = (tree)malloc(sizeof(struct Node));
+	t->data = a[0];
+	for (i = 1;i < len;i++) { // 注意i从1开始
+		if (a[i] >= t->data)break;
+	}
+	// 如果i之后还有比a[0]小的元素，则不是二叉搜索树
+	for (int j = i;j < len;j++) {
+		if (a[j] < t->data) {
+			check1 = 1;
+			return NULL;
+		}
+	}
+	t->l = istree1(a + 1, i - 1); // a[1]到a[i-1]为左子树
+	t->r = istree1(a + i, len - i); // a[i]到a[len-1]为右子树
+	return t;
+}
+ 
+// 依样画葫芦，判断是不是二叉搜索树的“镜像”
+tree istree2(int a[], int len) {
+	int i; // 用i来储存第一个小于a[0]的元素的下标
+	if (!len)return NULL;
+	tree t = (tree)malloc(sizeof(struct Node));
+	t->data = a[0];
+	for (i = 1;i < len;i++) { // 注意i从1开始
+		if (a[i] < t->data)break;
+	}
+	// 如果i之后还有大于等于a[0]的元素，则不是二叉搜索树
+	for (int j = i;j < len;j++) {
+		if (a[j] >= t->data) {
+			check2 = 1;
+			return NULL;
+		}
+	}
+	t->l = istree2(a + 1, i - 1); // a[1]到a[i-1]为左子树
+	t->r = istree2(a + i, len - i); // a[i]到a[len-1]为右子树
+	return t;
+}
+ 
+// 输出后序遍历的结果
+int flag = 1;
+void print(tree t) {
+	if (t) {
+		print(t->l); // 输出左子树
+		print(t->r); // 输出右子树
+		if (flag)flag = 0;
+		else cout << " ";
+		cout << t->data; // 输出当前结点的键值
+	}
+}
+ 
+int main() {
+	int n;
+	int a[1005];
+	cin >> n;
+	for (int i = 0;i < n;i++)cin >> a[i];
+	tree t1 = istree1(a, n);
+	tree t2 = istree2(a, n);
+	if (t1 && !check1) {
+		cout << "YES" << endl;
+		print(t1);
+	}
+	else if (t2 && !check2) {
+		cout << "YES" << endl;
+		print(t2);
+	}
+	else {
+		cout << "NO" << endl;
+	}
+}
