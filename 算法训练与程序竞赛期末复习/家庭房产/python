@@ -1,0 +1,61 @@
+# 定义find函数来寻找当前成员的祖宗
+def find(p):
+    if father[p] == p:  # 自己是祖宗，则直接返回自己
+        return p
+    else:
+        return find(father[p])  # 自己不是，则继续寻找祖宗的祖宗
+ 
+ 
+father = [i for i in range(10000)]  # 每个成员的祖宗
+num = [0] * 10000  # 每个成员房产套数
+mj = [0] * 10000  # 每个成员的房产面积
+check = [0] * 10000  # 检查该成员编号在题目中是否出现过
+young = [i for i in range(10000)]  # 成员所在家庭的家庭成员的最小编号
+ 
+n = int(input())
+for i in range(n):
+    lst = list(map(int, input().split()))
+    check[lst[0]] = 1
+ 
+    # 让lst[0]的祖宗成为这组数据中所有成员的祖宗的祖宗并记录出现的最小编号
+    if lst[1] != -1:
+        check[lst[1]] = 1
+        if young[find(lst[1])] < young[find(lst[0])]:
+            young[find(lst[0])] = young[find(lst[1])]
+        father[find(lst[1])] = father[find(lst[0])]
+    if lst[2] != -1:
+        check[lst[2]] = 1
+        if young[find(lst[2])] < young[find(lst[0])]:
+            young[find(lst[0])] = young[find(lst[2])]
+        father[find(lst[2])] = father[find(lst[0])]
+    for j in range(lst[3]):
+        check[lst[4 + j]] = 1
+        if young[find(lst[4 + j])] < young[find(lst[0])]:
+            young[find(lst[0])] = young[find(lst[4 + j])]
+        father[find(lst[4 + j])] = father[find(lst[0])]
+ 
+    # 把房产添加到lst[0]的祖宗的名下
+    num[father[find(lst[0])]] += lst[4 + lst[3]]
+    mj[father[find(lst[0])]] += lst[5 + lst[3]]
+ 
+dic = {}  # {祖宗: 该家庭的成员人数}
+for i in range(10000):
+    if check[i]:  # 判断该成员编号是否在题目中出现过
+        dic[find(i)] = dic.get(find(i), 0) + 1
+ 
+        # 如果该成员不是祖宗，那么把他的房产添加到他祖宗的名下
+        if i != find(i):
+            num[find(i)] += num[i]
+            mj[find(i)] += mj[i]
+ 
+res = []
+for i in range(10000):
+    if i == find(i) and check[i]:  # 如果该成员编号在题目中出现过且是祖宗，则把需要输出的信息添加到res中
+        res.append([young[i], dic[i], num[i] / dic[i], mj[i] / dic[i]])
+ 
+res.sort(key=lambda x: x[0])  # 按成员编号的升序
+res.sort(key=lambda x: x[3], reverse=True)  # 按人均面积降序
+ 
+print(len(res))
+for x in res:
+    print(f"{x[0]:04} {x[1]} {x[2]:.3f} {x[3]:.3f}")
