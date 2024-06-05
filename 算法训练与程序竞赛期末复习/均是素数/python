@@ -1,0 +1,25 @@
+def prime(n):
+    if n == 1:
+        return 0
+    for i in range(2, int(n ** 0.5)+1):
+        if n % i == 0:
+            return 0
+    return 1
+ 
+ 
+m,n = map(int,input().split())
+pri = []
+for i in range(m,n+1):
+    if prime(i):
+        pri.append(i)
+ 
+ans = 0
+for i in range(len(pri)-2):
+    for j in range(i+1, len(pri)-1):
+        for k in range(j+1, len(pri)):
+            p = pri[i]
+            q = pri[j]
+            r = pri[k]
+            if prime(p*q+r)*prime(q*r+p)*prime(r*p+q) == 1:
+                ans+=1
+print(ans)
