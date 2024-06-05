@@ -1,0 +1,65 @@
+#include"iostream"
+#include"queue"
+using namespace std;
+ 
+class tree {
+public:
+	int data;
+	tree* l;
+	tree* r;
+	tree(int x) :data(x), l(nullptr), r(nullptr) {}
+};
+ 
+tree* build(int a[], int b[], int len) {
+	if (!len)return NULL;
+	tree* t = new tree(a[len-1]);
+	int i = 0;
+	for (;i < len;i++)if (b[i] == t->data)break;
+ 
+	// a[0]到a[i-1]为左子树的结点，a[i]到a[len-2]为右子树的结点
+	// b[0]到b[i-1]为左子树的结点，b[i+1]到b[len-1]为右子树的结点
+	t->l = build(a, b, i);
+	t->r = build(a + i, b + i + 1, len - i - 1);
+	return t;
+}
+ 
+// 输出层序遍历的结果
+void print(tree *t) {
+	// 双指针模拟队列
+	/*tree* queue[35];
+	if (t) {
+		int l = 0, r = 0;
+		queue[r++] = t;
+		while (l < r) {
+			tree* tt = queue[l++];
+			if (t != tt)cout << " ";
+			cout << tt->data;
+			if (tt->l)queue[r++] = tt->l;
+			if (tt->r)queue[r++] = tt->r;
+		}
+	}*/
+	// 队列
+	if (t) {
+		queue<tree*> q;
+		q.push(t);
+		while (!q.empty()) {
+			tree* tt = q.front();
+			q.pop();
+			if (t != tt)cout << " ";
+			cout << tt->data;
+			if (tt->l)q.push(tt->l);
+			if (tt->r)q.push(tt->r);
+		}
+	}
+}
+ 
+int main() {
+	int n;
+	int a[35];
+	int b[35];
+	cin >> n;
+	for (int i = 0;i < n;i++)cin >> a[i];
+	for (int i = 0;i < n;i++)cin >> b[i];
+	tree* t = build(a, b, n);
+	print(t);
+}
