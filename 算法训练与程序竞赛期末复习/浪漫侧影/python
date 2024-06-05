@@ -1,1 +1,51 @@
-
+n = int(input())
+hx = list(map(int, input().split()))  # 后序遍历序列
+zx = list(map(int, input().split()))  # 中序遍历序列
+ 
+ 
+def build(a_start, a_end, b_start, b_end):
+    if a_start > a_end:
+        return None
+ 
+    newtree = [hx[a_end], -1, -1]
+ 
+    # 在中序遍历序列中查找根节点的位置
+    root_index = b_start
+    while zx[root_index] != newtree[0]:
+        root_index += 1
+ 
+    left_length = root_index - b_start
+ 
+    newtree[1] = build(a_start, a_start + left_length - 1, b_start, root_index - 1)
+    newtree[2] = build(a_start + left_length, a_end - 1, root_index + 1, b_end)
+ 
+    return newtree
+ 
+ 
+tree = build(0, n - 1, 0, n - 1)
+ 
+if tree:
+    res = []
+    queue = [tree]
+    while queue:
+        now_nodes = []  # 这层的结点的键值
+        next_level = []  # 下一层的结点
+ 
+        for x in queue:
+            now_nodes.append(x[0])
+            if x[1]:
+                next_level.append(x[1])
+            if x[2]:
+                next_level.append(x[2])
+ 
+        res.append(now_nodes)
+        queue = next_level
+ 
+cnt = 0
+for x in res:
+    for y in x:
+        if cnt:
+            print(" ", end='')
+        else:
+            cnt = 1
+        print(y, end='')
