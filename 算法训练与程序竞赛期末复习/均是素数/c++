@@ -1,0 +1,43 @@
+#include"iostream"
+#include"vector"
+#include"math.h"
+using namespace std;
+ 
+int prime(int n)// 判断素数
+{
+    int i;
+    if (n == 1) {
+        return 0;//1既不是素数也不是和数 
+    }
+    for (i = 2; i <= sqrt(n); i++) {
+        if (n % i == 0)
+            return 0;//返回0不为素数
+    }
+    return 1;//返回1为素数
+}
+ 
+int main() {
+    int m, n;
+    cin >> m >> n;
+    vector<int>pri;
+    for (int i = m;i <= n;i++) {
+        if (prime(i)) {
+            pri.push_back(i);
+        }
+    }
+    int ans = 0;
+    int len = pri.size();
+    for (int i = 0;i < len - 2;i++) {
+        for (int j = i + 1;j < len - 1;j++) {
+            for (int k = j + 1;k < len;k++) {
+                int p = pri[i];
+                int q = pri[j];
+                int r = pri[k];
+                if (prime(p * q + r) * prime(q * r + p) * prime(r * p + q) == 1) {
+                    ans++;
+                }
+            }
+        }
+    }
+    cout << ans;
+}
